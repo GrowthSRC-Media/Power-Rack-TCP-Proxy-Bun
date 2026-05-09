@@ -1,0 +1,111 @@
+{"level":"error","message":"proxy.error Unable to start \"Reddis\" on 0.0.0.0:9736: Failed to listen at 0.0.0.0","service":"Reddis","svcId":"svc_1774415199782_bza617","timestamp":"2026-04-07T17:49:15.177Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1774415199782_bza617","level":"error","message":"manager.service.start_failed","name":"Reddis","timestamp":"2026-04-07T17:49:15.178Z"}
+{"level":"error","message":"proxy.error Unable to start \"Minio\" on 0.0.0.0:9000: Failed to listen at 0.0.0.0","service":"Minio","svcId":"svc_minio_proxy","timestamp":"2026-04-07T17:49:15.207Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_minio_proxy","level":"error","message":"manager.service.start_failed","name":"Minio","timestamp":"2026-04-07T17:49:15.208Z"}
+{"level":"error","message":"proxy.error Unable to start \"Dokploy-trafik\" on 0.0.0.0:80: Failed to listen at 0.0.0.0","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-07T17:49:15.222Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1775277966137_os66n4","level":"error","message":"manager.service.start_failed","name":"Dokploy-trafik","timestamp":"2026-04-07T17:49:15.223Z"}
+{"level":"error","message":"proxy.error Unable to start \"Dokploy-traefik2\" on 0.0.0.0:443: Failed to listen at 0.0.0.0","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-07T17:49:15.238Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1775279235967_4yeb76","level":"error","message":"manager.service.start_failed","name":"Dokploy-traefik2","timestamp":"2026-04-07T17:49:15.239Z"}
+{"level":"error","message":"proxy.error Unable to start \"dockplay-d\" on 0.0.0.0:13000: Failed to listen at 0.0.0.0","service":"dockplay-d","svcId":"svc_1775564313376_zzq9gs","timestamp":"2026-04-07T17:49:15.254Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1775564313376_zzq9gs","level":"error","message":"manager.service.start_failed","name":"dockplay-d","timestamp":"2026-04-07T17:49:15.255Z"}
+{"level":"error","message":"proxy.error Unable to start \"Reddis\" on 0.0.0.0:9736: Failed to listen at 0.0.0.0","service":"Reddis","svcId":"svc_1774415199782_bza617","timestamp":"2026-04-07T17:49:19.336Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1774415199782_bza617","level":"error","message":"manager.service.start_failed","name":"Reddis","timestamp":"2026-04-07T17:49:19.337Z"}
+{"level":"error","message":"proxy.error Unable to start \"Minio\" on 0.0.0.0:9000: Failed to listen at 0.0.0.0","service":"Minio","svcId":"svc_minio_proxy","timestamp":"2026-04-07T17:49:19.352Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_minio_proxy","level":"error","message":"manager.service.start_failed","name":"Minio","timestamp":"2026-04-07T17:49:19.352Z"}
+{"level":"error","message":"proxy.error Unable to start \"Dokploy-trafik\" on 0.0.0.0:80: Failed to listen at 0.0.0.0","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-07T17:49:19.367Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1775277966137_os66n4","level":"error","message":"manager.service.start_failed","name":"Dokploy-trafik","timestamp":"2026-04-07T17:49:19.368Z"}
+{"level":"error","message":"proxy.error Unable to start \"Dokploy-traefik2\" on 0.0.0.0:443: Failed to listen at 0.0.0.0","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-07T17:49:19.383Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1775279235967_4yeb76","level":"error","message":"manager.service.start_failed","name":"Dokploy-traefik2","timestamp":"2026-04-07T17:49:19.383Z"}
+{"level":"error","message":"proxy.error Unable to start \"dockplay-d\" on 0.0.0.0:13000: Failed to listen at 0.0.0.0","service":"dockplay-d","svcId":"svc_1775564313376_zzq9gs","timestamp":"2026-04-07T17:49:19.398Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1775564313376_zzq9gs","level":"error","message":"manager.service.start_failed","name":"dockplay-d","timestamp":"2026-04-07T17:49:19.399Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-trafik\": ","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-08T06:17:33.508Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:17:35.116Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-trafik\": ","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-08T06:17:38.872Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-trafik\": ","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-08T06:17:45.696Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:17:47.241Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-trafik\": ","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-08T06:17:55.187Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:17:55.294Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-trafik\": ","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-08T06:17:55.826Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-trafik\": ","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-08T06:18:01.697Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:18:06.548Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:18:40.920Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-trafik\": ","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-08T06:18:41.227Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:18:44.606Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-trafik\": ","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-08T06:18:48.098Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:19:24.950Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:26:37.864Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:26:47.468Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:26:58.029Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:27:08.494Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:27:16.783Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:27:26.876Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:27:37.695Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:27:46.237Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:27:56.887Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:28:07.796Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:28:17.996Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:29:12.506Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:29:23.270Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:29:31.295Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:29:33.650Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:29:36.433Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:29:38.646Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:29:42.145Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:29:53.513Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:29:58.024Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:30:03.270Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:30:08.262Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:30:20.111Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:30:24.780Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:30:35.853Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:30:46.941Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:30:52.528Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:31:02.027Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-trafik\": ","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-08T06:31:26.389Z"}
+{"err":{"message":"null is not an object (evaluating 'context')","stack":"TypeError: null is not an object (evaluating 'context')\n    at internalConnectMultipleTimeout (node:net:1127:215)"},"level":"error","message":"uncaughtException","timestamp":"2026-04-08T06:31:26.645Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:32:15.890Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-trafik\": ","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-08T06:35:09.177Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:36:32.878Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-trafik\": ","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-08T06:42:17.267Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-trafik\": ","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-08T06:42:20.504Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-trafik\": ","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-08T06:42:23.405Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:42:23.623Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:42:25.437Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-trafik\": ","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-08T06:42:25.437Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-trafik\": ","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-08T06:42:25.437Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:42:56.100Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:42:59.932Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:43:00.319Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:43:01.632Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:43:02.694Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:43:08.804Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:43:11.279Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:43:11.445Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:43:18.666Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:43:21.377Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:43:21.618Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:43:27.288Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Dokploy-traefik2\": ","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-08T06:43:30.024Z"}
+{"level":"error","message":"proxy.error Unable to start \"Reddis\" on 0.0.0.0:9736: Failed to listen at 0.0.0.0","service":"Reddis","svcId":"svc_1774415199782_bza617","timestamp":"2026-04-09T07:30:48.066Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1774415199782_bza617","level":"error","message":"manager.service.start_failed","name":"Reddis","timestamp":"2026-04-09T07:30:48.067Z"}
+{"level":"error","message":"proxy.error Unable to start \"Minio\" on 0.0.0.0:9000: Failed to listen at 0.0.0.0","service":"Minio","svcId":"svc_minio_proxy","timestamp":"2026-04-09T07:30:48.098Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_minio_proxy","level":"error","message":"manager.service.start_failed","name":"Minio","timestamp":"2026-04-09T07:30:48.098Z"}
+{"level":"error","message":"proxy.error Unable to start \"Dokploy-trafik\" on 0.0.0.0:80: Failed to listen at 0.0.0.0","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-09T07:30:48.112Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1775277966137_os66n4","level":"error","message":"manager.service.start_failed","name":"Dokploy-trafik","timestamp":"2026-04-09T07:30:48.113Z"}
+{"level":"error","message":"proxy.error Unable to start \"Dokploy-traefik2\" on 0.0.0.0:443: Failed to listen at 0.0.0.0","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-09T07:30:48.143Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1775279235967_4yeb76","level":"error","message":"manager.service.start_failed","name":"Dokploy-traefik2","timestamp":"2026-04-09T07:30:48.144Z"}
+{"level":"error","message":"proxy.error Unable to start \"dockplay-d\" on 0.0.0.0:3000: Failed to listen at 0.0.0.0","service":"dockplay-d","svcId":"svc_1775564313376_zzq9gs","timestamp":"2026-04-09T07:30:48.174Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1775564313376_zzq9gs","level":"error","message":"manager.service.start_failed","name":"dockplay-d","timestamp":"2026-04-09T07:30:48.175Z"}
+{"level":"error","message":"proxy.error Unable to start \"Reddis\" on 0.0.0.0:9736: Failed to listen at 0.0.0.0","service":"Reddis","svcId":"svc_1774415199782_bza617","timestamp":"2026-04-09T08:19:51.305Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1774415199782_bza617","level":"error","message":"manager.service.start_failed","name":"Reddis","timestamp":"2026-04-09T08:19:51.306Z"}
+{"level":"error","message":"proxy.error Unable to start \"Minio\" on 0.0.0.0:9000: Failed to listen at 0.0.0.0","service":"Minio","svcId":"svc_minio_proxy","timestamp":"2026-04-09T08:19:51.321Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_minio_proxy","level":"error","message":"manager.service.start_failed","name":"Minio","timestamp":"2026-04-09T08:19:51.322Z"}
+{"level":"error","message":"proxy.error Unable to start \"Dokploy-trafik\" on 0.0.0.0:80: Failed to listen at 0.0.0.0","service":"Dokploy-trafik","svcId":"svc_1775277966137_os66n4","timestamp":"2026-04-09T08:19:51.336Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1775277966137_os66n4","level":"error","message":"manager.service.start_failed","name":"Dokploy-trafik","timestamp":"2026-04-09T08:19:51.337Z"}
+{"level":"error","message":"proxy.error Unable to start \"Dokploy-traefik2\" on 0.0.0.0:443: Failed to listen at 0.0.0.0","service":"Dokploy-traefik2","svcId":"svc_1775279235967_4yeb76","timestamp":"2026-04-09T08:19:51.352Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1775279235967_4yeb76","level":"error","message":"manager.service.start_failed","name":"Dokploy-traefik2","timestamp":"2026-04-09T08:19:51.353Z"}
+{"level":"error","message":"proxy.error Unable to start \"dockplay-d\" on 0.0.0.0:3000: Failed to listen at 0.0.0.0","service":"dockplay-d","svcId":"svc_1775564313376_zzq9gs","timestamp":"2026-04-09T08:19:51.367Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1775564313376_zzq9gs","level":"error","message":"manager.service.start_failed","name":"dockplay-d","timestamp":"2026-04-09T08:19:51.368Z"}
+{"level":"error","message":"proxy.error Unable to start \"Postgress18\" on 0.0.0.0:5434: Failed to listen at 0.0.0.0","service":"Postgress18","svcId":"svc_1775637466635_x4ix8r","timestamp":"2026-04-09T08:19:51.383Z"}
+{"err":"Failed to listen at 0.0.0.0","id":"svc_1775637466635_x4ix8r","level":"error","message":"manager.service.start_failed","name":"Postgress18","timestamp":"2026-04-09T08:19:51.383Z"}
+{"level":"error","message":"proxy.error Upstream error on \"Postgress18\": ","service":"Postgress18","svcId":"svc_1775637466635_x4ix8r","timestamp":"2026-04-09T09:34:48.650Z"}

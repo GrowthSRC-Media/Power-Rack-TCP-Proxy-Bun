@@ -1,0 +1,72 @@
+[
+  {
+    "id": "svc_1774415199782_bza617",
+    "name": "Reddis",
+    "protocol": "tcp",
+    "listenHost": "0.0.0.0",
+    "listenPort": 9736,
+    "targetHost": "localhost",
+    "targetPort": 6379,
+    "enabled": true
+  },
+  {
+    "id": "svc_minio_proxy",
+    "name": "Minio",
+    "protocol": "tcp",
+    "listenHost": "0.0.0.0",
+    "listenPort": 9000,
+    "targetHost": "localhost",
+    "targetPort": 9000,
+    "enabled": true
+  },
+  {
+    "id": "svc_1775277966137_os66n4",
+    "name": "Dokploy-trafik",
+    "protocol": "tcp",
+    "listenHost": "0.0.0.0",
+    "listenPort": 80,
+    "targetHost": "localhost",
+    "targetPort": 80,
+    "enabled": true
+  },
+  {
+    "id": "svc_1775279235967_4yeb76",
+    "name": "Dokploy-traefik2",
+    "protocol": "tcp",
+    "listenHost": "0.0.0.0",
+    "listenPort": 443,
+    "targetHost": "localhost",
+    "targetPort": 443,
+    "enabled": true
+  },
+  {
+    "id": "svc_1775564313376_zzq9gs",
+    "name": "dockplay-d",
+    "protocol": "tcp",
+    "listenHost": "0.0.0.0",
+    "listenPort": 3000,
+    "targetHost": "localhost",
+    "targetPort": 13000,
+    "enabled": true
+  },
+  {
+    "id": "svc_1775637466635_x4ix8r",
+    "name": "Postgress18",
+    "protocol": "tcp",
+    "listenHost": "0.0.0.0",
+    "listenPort": 5434,
+    "targetHost": "localhost",
+    "targetPort": 5434,
+    "enabled": true
+  },
+  {
+    "id": "svc_1776856231574_zhf1vi",
+    "name": "webmon2",
+    "protocol": "tcp",
+    "listenHost": "0.0.0.0",
+    "listenPort": 6390,
+    "targetHost": "localhost",
+    "targetPort": 6390,
+    "enabled": true
+  }
+]
