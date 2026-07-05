@@ -46,7 +46,7 @@
     "listenHost": "0.0.0.0",
     "listenPort": 3000,
     "targetHost": "localhost",
-    "targetPort": 13000,
+    "targetPort": 3000,
     "enabled": true
   },
   {
@@ -67,6 +67,16 @@
     "listenPort": 6390,
     "targetHost": "localhost",
     "targetPort": 6390,
+    "enabled": true
+  },
+  {
+    "id": "svc_index_tracker_proxy",
+    "name": "Index Tracker",
+    "protocol": "tcp",
+    "listenHost": "0.0.0.0",
+    "listenPort": 8765,
+    "targetHost": "localhost",
+    "targetPort": 8765,
     "enabled": true
   }
 ]
