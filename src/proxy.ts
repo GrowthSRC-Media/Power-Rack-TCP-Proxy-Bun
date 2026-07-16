@@ -3,7 +3,7 @@ import { logger } from "./logger";
 
 const LOG_PAYLOAD = process.env.PROXY_LOG_PAYLOAD === "1";
 
-export type ServiceStatus = "stopped" | "starting" | "running" | "error";
+export type ServiceStatus = "stopped" | "starting" | "waiting" | "running" | "error";
 
 export type ProxyProtocol = "tcp" | "udp";
 
@@ -139,6 +139,7 @@ export class ProxyServiceRuntime {
   private log: ReturnType<typeof logger.child>;
   private bytesIn = 0;
   private bytesOut = 0;
+  private _startAbort: AbortController | null = null;
 
   constructor(config: ProxyServiceConfig) {
     this.config = { ...config };
@@ -168,10 +169,11 @@ export class ProxyServiceRuntime {
   }
 
   async start() {
-    if (this.state.listener || this.state.status === "starting") {
+    if (this.state.listener || this.state.status === "starting" || this.state.status === "waiting") {
       return;
     }
 
+    this._startAbort = new AbortController();
     this.mark("starting");
     this.log.info("proxy.listen.attempt", {
       protocol: this.config.protocol,
@@ -275,8 +277,14 @@ export class ProxyServiceRuntime {
   }
 
   private async startTcpNodeNet() {
+    await this.waitForUpstream(
+      this.config.targetHost,
+      this.config.targetPort,
+      this._startAbort!.signal,
+    );
+
     return new Promise<void>((resolve, reject) => {
-      const server = net.createServer((clientSocket) => {
+      const server = net.createServer(async (clientSocket) => {
         this.state.activeConnections += 1;
         this.state.totalConnections += 1;
         this.state.lastEventAt = new Date().toISOString();
@@ -287,10 +295,40 @@ export class ProxyServiceRuntime {
         });
         this.onChange?.();
 
-        const upstream = net.connect(
-          this.config.targetPort,
-          this.config.targetHost,
-        );
+        const controller = new AbortController();
+        clientSocket.on("close", () => controller.abort());
+        clientSocket.on("error", () => controller.abort());
+
+        // Pause client until upstream is ready (prevents unbounded buffering during retry)
+        clientSocket.pause();
+
+        let upstream: net.Socket;
+        try {
+          upstream = await this.connectWithRetry(
+            this.config.targetPort,
+            this.config.targetHost,
+            controller.signal,
+          );
+        } catch {
+          this.log.warn("proxy.upstream.gaveUp", {
+            name: this.config.name,
+            targetHost: this.config.targetHost,
+            targetPort: this.config.targetPort,
+          });
+          clientSocket.destroy();
+          this.state.activeConnections = Math.max(0, this.state.activeConnections - 1);
+          this.onChange?.();
+          return;
+        }
+
+        if (clientSocket.destroyed) {
+          upstream.destroy();
+          this.state.activeConnections = Math.max(0, this.state.activeConnections - 1);
+          this.onChange?.();
+          return;
+        }
+
+        clientSocket.resume();
 
         const cleanup = () => {
           this.state.activeConnections = Math.max(0, this.state.activeConnections - 1);
@@ -362,6 +400,12 @@ export class ProxyServiceRuntime {
   }
 
   private async startUdp() {
+    await this.waitForUpstream(
+      this.config.targetHost,
+      this.config.targetPort,
+      this._startAbort!.signal,
+    );
+
     try {
       const upstreamByClient = new Map<string, { send: (buf: Uint8Array) => void; close: () => void }>();
       const self = this;
@@ -473,7 +517,93 @@ export class ProxyServiceRuntime {
     }
   }
 
+  private async waitForUpstream(
+    targetHost: string,
+    targetPort: number,
+    signal: AbortSignal,
+    timeoutMs = 120_000,
+    intervalMs = 2_000,
+  ): Promise<void> {
+    this.mark("waiting");
+    const deadline = Date.now() + timeoutMs;
+
+    while (Date.now() < deadline) {
+      if (signal.aborted) throw new Error("Start aborted");
+
+      const reachable = await new Promise<boolean>((resolve) => {
+        const sock = net.connect(targetPort, targetHost);
+        const timer = setTimeout(() => { sock.destroy(); resolve(false); }, 3_000);
+        sock.on("connect", () => { clearTimeout(timer); sock.destroy(); resolve(true); });
+        sock.on("error", () => { clearTimeout(timer); resolve(false); });
+      });
+
+      if (reachable) {
+        this.log.info("proxy.upstream.ready", { targetHost, targetPort });
+        return;
+      }
+
+      this.log.debug("proxy.upstream.notReady", { targetHost, targetPort });
+
+      await new Promise<void>((resolve, reject) => {
+        const timer = setTimeout(resolve, intervalMs);
+        signal.addEventListener("abort", () => {
+          clearTimeout(timer);
+          reject(new Error("Start aborted"));
+        }, { once: true });
+      });
+    }
+
+    throw new Error(`Upstream ${targetHost}:${targetPort} not reachable after ${timeoutMs / 1000}s`);
+  }
+
+  private async connectWithRetry(
+    targetPort: number,
+    targetHost: string,
+    signal: AbortSignal,
+    maxRetries = 3,
+    initialDelayMs = 1_000,
+  ): Promise<net.Socket> {
+    let delay = initialDelayMs;
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      if (signal.aborted) throw new Error("Client disconnected");
+
+      try {
+        return await new Promise<net.Socket>((resolve, reject) => {
+          const sock = net.connect(targetPort, targetHost);
+          sock.on("connect", () => resolve(sock));
+          sock.on("error", (err) => { sock.destroy(); reject(err); });
+        });
+      } catch (err) {
+        if (attempt === maxRetries) throw err;
+
+        this.log.info("proxy.upstream.retry", {
+          attempt: attempt + 1,
+          maxRetries,
+          delay,
+          targetHost,
+          targetPort,
+        });
+
+        await new Promise<void>((resolve, reject) => {
+          const timer = setTimeout(resolve, delay);
+          signal.addEventListener("abort", () => {
+            clearTimeout(timer);
+            reject(new Error("Client disconnected"));
+          }, { once: true });
+        });
+
+        delay = Math.min(delay * 2, 8_000);
+      }
+    }
+
+    throw new Error("Unreachable");
+  }
+
   stop() {
+    this._startAbort?.abort();
+    this._startAbort = null;
+
     this.log.info("proxy.stop", {
       bytesIn: this.bytesIn,
       bytesOut: this.bytesOut,

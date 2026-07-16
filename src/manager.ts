@@ -386,7 +386,7 @@ class ProxyManagerApp {
 
     const snapshot = this.getSnapshot(service);
 
-    if (snapshot.status === "running" || snapshot.status === "starting") {
+    if (snapshot.status === "running" || snapshot.status === "starting" || snapshot.status === "waiting") {
       this.stopService(service.id);
     } else {
       await this.startService(service.id);
@@ -566,7 +566,9 @@ class ProxyManagerApp {
 
     // Subtitle
     const runningCount = snapshots.filter((s) => s.status === "running").length;
-    const subtitle = `${runningCount}/${snapshots.length} services running`;
+    const waitingCount = snapshots.filter((s) => s.status === "waiting").length;
+    const suffix = waitingCount > 0 ? ` (${waitingCount} waiting)` : "";
+    const subtitle = `${runningCount}/${snapshots.length} services running${suffix}`;
     const subPad = Math.max(0, w - 2 - subtitle.length);
     const subLeft = Math.floor(subPad / 2);
     const subRight = subPad - subLeft;
@@ -697,6 +699,8 @@ class ProxyManagerApp {
         return chalk.green("\u25CF");
       case "starting":
         return chalk.yellow("\u25CF");
+      case "waiting":
+        return chalk.blue("\u25CF");
       case "error":
         return chalk.red("\u25CF");
       default:
@@ -749,6 +753,8 @@ class ProxyManagerApp {
         return chalk.green(text);
       case "starting":
         return chalk.yellow(text);
+      case "waiting":
+        return chalk.blue(text);
       case "error":
         return chalk.red(text);
       default:
