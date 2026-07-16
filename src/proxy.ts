@@ -299,8 +299,11 @@ export class ProxyServiceRuntime {
         clientSocket.on("close", () => controller.abort());
         clientSocket.on("error", () => controller.abort());
 
-        // Pause client until upstream is ready (prevents unbounded buffering during retry)
-        clientSocket.pause();
+        // Buffer client data while upstream connects (Bun's node:net doesn't
+        // support deferred pipe() after pause/resume, so we buffer manually).
+        const pendingChunks: Buffer[] = [];
+        const bufferHandler = (chunk: Buffer) => { pendingChunks.push(Buffer.from(chunk)); };
+        clientSocket.on("data", bufferHandler);
 
         let upstream: net.Socket;
         try {
@@ -315,6 +318,7 @@ export class ProxyServiceRuntime {
             targetHost: this.config.targetHost,
             targetPort: this.config.targetPort,
           });
+          clientSocket.removeListener("data", bufferHandler);
           clientSocket.destroy();
           this.state.activeConnections = Math.max(0, this.state.activeConnections - 1);
           this.onChange?.();
@@ -328,7 +332,10 @@ export class ProxyServiceRuntime {
           return;
         }
 
-        clientSocket.resume();
+        // Flush buffered data, switch to pipe() for backpressure handling
+        clientSocket.removeListener("data", bufferHandler);
+        for (const buf of pendingChunks) upstream.write(buf);
+        pendingChunks.length = 0;
 
         const cleanup = () => {
           this.state.activeConnections = Math.max(0, this.state.activeConnections - 1);
