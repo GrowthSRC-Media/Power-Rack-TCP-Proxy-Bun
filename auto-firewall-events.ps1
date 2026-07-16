@@ -20,9 +20,9 @@
 
 param(
     [int]$IntervalSeconds = 30,
-    [string]$ServicesJson = "C:\Docker-service-compose\Reddis\services.json",
+    [string]$ServicesJson = "C:\Docker-service-compose\TCP-Proxy\services.json",
     [string]$RulePrefix = "AutoProxy-",
-    [string]$LogFile = "C:\Docker-service-compose\Reddis\logs\auto-firewall.log"
+    [string]$LogFile = "C:\Docker-service-compose\TCP-Proxy\logs\auto-firewall.log"
 )
 
 $ErrorActionPreference = "Continue"
