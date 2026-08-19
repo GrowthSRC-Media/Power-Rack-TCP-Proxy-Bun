@@ -6,6 +6,7 @@ import { join } from "node:path";
 import {
   createDefaultService,
   ProxyServiceRuntime,
+  type DomainRoute,
   type ProxyServiceConfig,
   type ProxyServiceSnapshot,
   validateService,
@@ -110,6 +111,7 @@ class ProxyManagerApp {
           : "localhost",
       targetPort: this.toPort(item.targetPort, 9001),
       enabled: typeof item.enabled === "boolean" ? item.enabled : true,
+      domainRoutes: this.normalizeDomainRoutes(item.domainRoutes),
     };
   }
 
@@ -118,6 +120,22 @@ class ProxyManagerApp {
     return Number.isInteger(numeric) && numeric >= 1 && numeric <= 65535
       ? numeric
       : fallback;
+  }
+
+  private normalizeDomainRoutes(raw: unknown): DomainRoute[] | undefined {
+    if (!Array.isArray(raw) || raw.length === 0) return undefined;
+    const routes: DomainRoute[] = [];
+    for (const r of raw) {
+      if (r && typeof r === "object" && typeof (r as Record<string, unknown>).domain === "string") {
+        const item = r as Record<string, unknown>;
+        routes.push({
+          domain: String(item.domain),
+          targetHost: typeof item.targetHost === "string" && item.targetHost.trim() ? item.targetHost : "localhost",
+          targetPort: this.toPort(item.targetPort, 80),
+        });
+      }
+    }
+    return routes.length > 0 ? routes : undefined;
   }
 
   private async writeConfigFile(services: ProxyServiceConfig[]) {
@@ -404,15 +422,20 @@ class ProxyManagerApp {
     const draft = createDefaultService();
     draft.name = await this.prompt("Service name", draft.name);
     draft.protocol = await this.promptProtocol(draft.protocol);
+    draft.targetHost = await this.prompt("Target host (IP or hostname)", draft.targetHost);
     draft.targetPort = this.toPort(
-      await this.prompt("Application port (your app runs on)", String(draft.targetPort)),
+      await this.prompt("Target port (your app runs on)", String(draft.targetPort)),
       draft.targetPort,
     );
     draft.listenPort = this.toPort(
-      await this.prompt("Network/router port (exposed to internet)", String(draft.listenPort)),
+      await this.prompt("Listen port (exposed to internet)", String(draft.listenPort)),
       draft.listenPort,
     );
-    draft.targetHost = "localhost";
+
+    if (this.isYes(await this.prompt("Add domain routes? y/n", "n"))) {
+      draft.domainRoutes = await this.editDomainRoutesFlow([]);
+    }
+
     draft.enabled = this.isYes(await this.prompt("Start immediately? y/n", "y"));
 
     const errors = validateService(draft, this.services);
@@ -444,7 +467,7 @@ class ProxyManagerApp {
       ...selected,
       name: await this.prompt("Service name", selected.name),
       protocol: await this.promptProtocol(selected.protocol),
-      targetHost: "localhost",
+      targetHost: await this.prompt("Default target host", selected.targetHost),
       targetPort: this.toPort(
         await this.prompt("Application port (your app runs on)", String(selected.targetPort)),
         selected.targetPort,
@@ -462,6 +485,14 @@ class ProxyManagerApp {
           ),
         ),
     };
+
+    const hasRoutes = selected.domainRoutes && selected.domainRoutes.length > 0;
+    const routePrompt = hasRoutes
+      ? `Manage domain routes? (${selected.domainRoutes!.length} configured) y/n`
+      : "Add domain routes? y/n";
+    if (this.isYes(await this.prompt(routePrompt, hasRoutes ? "y" : "n"))) {
+      updated.domainRoutes = await this.editDomainRoutesFlow(selected.domainRoutes ?? []);
+    }
 
     const errors = validateService(updated, this.services);
     if (errors.length > 0) {
@@ -505,6 +536,55 @@ class ProxyManagerApp {
     this.ensureSelectionInBounds();
     await this.persistServices();
     this.statusMessage = `Deleted "${selected.name}"`;
+  }
+
+  private async editDomainRoutesFlow(existing: DomainRoute[]): Promise<DomainRoute[] | undefined> {
+    const routes = [...existing];
+
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      process.stdout.write("\n");
+      if (routes.length === 0) {
+        process.stdout.write(chalk.gray("  No domain routes configured.\n"));
+      } else {
+        process.stdout.write(chalk.cyan("  Current domain routes:\n"));
+        for (let i = 0; i < routes.length; i++) {
+          const r = routes[i]!;
+          process.stdout.write(
+            `  ${chalk.yellow(`${i + 1}.`)} ${chalk.white(r.domain)} ${chalk.gray("→")} ${chalk.green(`${r.targetHost}:${r.targetPort}`)}\n`,
+          );
+        }
+      }
+      process.stdout.write("\n");
+
+      const action = await this.prompt("(a)dd / (d)elete #N / (done)", "done");
+
+      if (action.toLowerCase() === "done" || action.toLowerCase() === "") {
+        break;
+      }
+
+      if (action.toLowerCase() === "a") {
+        const domain = await this.prompt("Domain (e.g., app.example.com or *.example.com)");
+        if (!domain.trim()) continue;
+        const targetHost = await this.prompt("Target host (LAN IP)", "localhost");
+        const targetPort = this.toPort(await this.prompt("Target port", "443"), 443);
+        routes.push({ domain: domain.trim(), targetHost, targetPort });
+        continue;
+      }
+
+      if (action.toLowerCase().startsWith("d")) {
+        const numStr = action.replace(/^d\s*/i, "").trim();
+        const idx = parseInt(numStr, 10) - 1;
+        if (idx >= 0 && idx < routes.length) {
+          const removed = routes.splice(idx, 1)[0]!;
+          process.stdout.write(chalk.red(`  Removed: ${removed.domain}\n`));
+        } else {
+          process.stdout.write(chalk.red(`  Invalid index. Use d1, d2, etc.\n`));
+        }
+      }
+    }
+
+    return routes.length > 0 ? routes : undefined;
   }
 
   private async reloadServices() {
@@ -655,8 +735,8 @@ class ProxyManagerApp {
     const hdr =
       "   " +
       chalk.gray(this.fit("SERVICE", 16)) + "  " +
-      chalk.gray(this.fit("APP PORT", 10)) + "  " +
-      chalk.gray(this.fit("NET PORT", 10)) + "  " +
+      chalk.gray(this.fit("TARGET", 22)) + "  " +
+      chalk.gray(this.fit("LISTEN", 8)) + "  " +
       chalk.gray(this.fit("STATUS", 10)) + "  " +
       chalk.gray(this.fit("CONN", 6)) + "  " +
       chalk.gray(this.fit("AUTO", 4));
@@ -671,12 +751,14 @@ class ProxyManagerApp {
       const statusDot = this.statusDot(snap.status);
       const statusText = this.colorStatus(snap.status, snap.status);
       const autoIcon = snap.enabled ? chalk.green("\u2713") : chalk.gray("\u2717");
+      const svc = this.services[i]!;
+      const targetStr = `${snap.targetHost}:${snap.targetPort}`;
 
       const row =
         ` ${indicator} ` +
         (selected ? chalk.white.bold(this.fit(snap.name, 16)) : chalk.white(this.fit(snap.name, 16))) + "  " +
-        chalk.yellow(this.fit(String(snap.targetPort), 10)) + "  " +
-        chalk.magenta(this.fit(String(snap.listenPort), 10)) + "  " +
+        chalk.yellow(this.fit(targetStr, 22)) + "  " +
+        chalk.magenta(this.fit(String(snap.listenPort), 8)) + "  " +
         `${statusDot} ${statusText}` + " ".repeat(Math.max(0, 7 - snap.status.length)) + "  " +
         chalk.white(this.fit(String(snap.activeConnections), 6)) + "  " +
         autoIcon;
@@ -687,6 +769,17 @@ class ProxyManagerApp {
         lines.push(chalk.cyan("\u2502") + chalk.bgGray(row + " ".repeat(rowPad)) + chalk.cyan("\u2502"));
       } else {
         lines.push(this.padRow(row, w));
+      }
+
+      // Domain route sub-rows
+      if (svc.domainRoutes) {
+        for (const route of svc.domainRoutes) {
+          const subRow =
+            "     " +
+            chalk.gray(this.fit(route.domain, 16)) + "  " +
+            chalk.green(this.fit(`${route.targetHost}:${route.targetPort}`, 22));
+          lines.push(this.padRow(subRow, w));
+        }
       }
     }
 
@@ -722,9 +815,17 @@ class ProxyManagerApp {
     lines.push(this.padRow(` ${chalk.bold.white(selected.name)}  ${statusDot} ${this.colorStatus(snapshot.status, snapshot.status)}`, w));
     lines.push(this.padRow("", w));
     lines.push(this.padRow(`  ${chalk.gray("Protocol")}         ${chalk.cyan(selected.protocol.toUpperCase())}`, w));
-    lines.push(this.padRow(`  ${chalk.gray("App Endpoint")}     ${chalk.white("localhost")}${chalk.gray(":")}${chalk.yellow(String(selected.targetPort))}`, w));
+    lines.push(this.padRow(`  ${chalk.gray("App Endpoint")}     ${chalk.white(selected.targetHost)}${chalk.gray(":")}${chalk.yellow(String(selected.targetPort))}`, w));
     lines.push(this.padRow(`  ${chalk.gray("Network Endpoint")}  ${chalk.white(selected.listenHost)}${chalk.gray(":")}${chalk.magenta(String(selected.listenPort))}`, w));
     lines.push(this.padRow(`  ${chalk.gray("Connections")}       ${chalk.white(String(snapshot.activeConnections))} ${chalk.gray("active")} ${chalk.gray("/")} ${chalk.white(String(snapshot.totalConnections))} ${chalk.gray("total")}`, w));
+
+    if (selected.domainRoutes && selected.domainRoutes.length > 0) {
+      lines.push(this.padRow("", w));
+      lines.push(this.padRow(`  ${chalk.gray("Domain Routes")}     ${chalk.cyan(String(selected.domainRoutes.length))} ${chalk.gray("configured")}`, w));
+      for (const route of selected.domainRoutes) {
+        lines.push(this.padRow(`    ${chalk.white(route.domain)} ${chalk.gray("\u2192")} ${chalk.green(`${route.targetHost}:${route.targetPort}`)}`, w));
+      }
+    }
 
     if (snapshot.lastError) {
       lines.push(this.padRow(`  ${chalk.gray("Last Error")}        ${chalk.red(snapshot.lastError)}`, w));

@@ -1,11 +1,18 @@
 import net from "node:net";
 import { logger } from "./logger";
+import { extractSniHostname, extractHttpHost, matchDomain } from "./domain-parser";
 
 const LOG_PAYLOAD = process.env.PROXY_LOG_PAYLOAD === "1";
 
 export type ServiceStatus = "stopped" | "starting" | "waiting" | "running" | "error";
 
 export type ProxyProtocol = "tcp" | "udp";
+
+export type DomainRoute = {
+  domain: string;
+  targetHost: string;
+  targetPort: number;
+};
 
 export type ProxyServiceConfig = {
   id: string;
@@ -16,6 +23,7 @@ export type ProxyServiceConfig = {
   targetHost: string;
   targetPort: number;
   enabled: boolean;
+  domainRoutes?: DomainRoute[];
 };
 
 export type ProxyServiceSnapshot = ProxyServiceConfig & {
@@ -125,6 +133,21 @@ export function validateService(
     errors.push(
       `Listen port ${service.listenHost}:${service.listenPort} is already in use by "${duplicatePort.name}".`,
     );
+  }
+
+  if (service.domainRoutes) {
+    for (let i = 0; i < service.domainRoutes.length; i++) {
+      const route = service.domainRoutes[i]!;
+      if (!route.domain.trim()) {
+        errors.push(`Domain route #${i + 1}: domain is required.`);
+      }
+      if (!route.targetHost.trim()) {
+        errors.push(`Domain route #${i + 1}: targetHost is required.`);
+      }
+      if (!Number.isInteger(route.targetPort) || route.targetPort < 1 || route.targetPort > 65535) {
+        errors.push(`Domain route #${i + 1}: targetPort must be 1-65535.`);
+      }
+    }
   }
 
   return errors;
@@ -283,6 +306,8 @@ export class ProxyServiceRuntime {
       this._startAbort!.signal,
     );
 
+    const hasDomainRoutes = this.config.domainRoutes && this.config.domainRoutes.length > 0;
+
     return new Promise<void>((resolve, reject) => {
       const server = net.createServer(async (clientSocket) => {
         this.state.activeConnections += 1;
@@ -299,26 +324,46 @@ export class ProxyServiceRuntime {
         clientSocket.on("close", () => controller.abort());
         clientSocket.on("error", () => controller.abort());
 
-        // Buffer client data while upstream connects (Bun's node:net doesn't
-        // support deferred pipe() after pause/resume, so we buffer manually).
+        let targetHost = this.config.targetHost;
+        let targetPort = this.config.targetPort;
         const pendingChunks: Buffer[] = [];
-        const bufferHandler = (chunk: Buffer) => { pendingChunks.push(Buffer.from(chunk)); };
-        clientSocket.on("data", bufferHandler);
+
+        if (hasDomainRoutes) {
+          // Domain-aware mode: wait for initial data to determine routing target
+          const resolved = await this.detectDomainTarget(
+            clientSocket,
+            this.config.domainRoutes!,
+            controller.signal,
+          );
+          if (clientSocket.destroyed) {
+            this.state.activeConnections = Math.max(0, this.state.activeConnections - 1);
+            this.onChange?.();
+            return;
+          }
+          targetHost = resolved.targetHost;
+          targetPort = resolved.targetPort;
+          pendingChunks.push(...resolved.buffered);
+        } else {
+          // Original behavior: buffer while connecting
+          const bufferHandler = (chunk: Buffer) => { pendingChunks.push(Buffer.from(chunk)); };
+          clientSocket.on("data", bufferHandler);
+          // Remove after upstream connects (handled below)
+          clientSocket.once("close", () => clientSocket.removeListener("data", bufferHandler));
+        }
 
         let upstream: net.Socket;
         try {
           upstream = await this.connectWithRetry(
-            this.config.targetPort,
-            this.config.targetHost,
+            targetPort,
+            targetHost,
             controller.signal,
           );
         } catch {
           this.log.warn("proxy.upstream.gaveUp", {
             name: this.config.name,
-            targetHost: this.config.targetHost,
-            targetPort: this.config.targetPort,
+            targetHost,
+            targetPort,
           });
-          clientSocket.removeListener("data", bufferHandler);
           clientSocket.destroy();
           this.state.activeConnections = Math.max(0, this.state.activeConnections - 1);
           this.onChange?.();
@@ -333,7 +378,7 @@ export class ProxyServiceRuntime {
         }
 
         // Flush buffered data, switch to pipe() for backpressure handling
-        clientSocket.removeListener("data", bufferHandler);
+        clientSocket.removeAllListeners("data");
         for (const buf of pendingChunks) upstream.write(buf);
         pendingChunks.length = 0;
 
@@ -522,6 +567,90 @@ export class ProxyServiceRuntime {
       );
       throw error;
     }
+  }
+
+  private detectDomainTarget(
+    clientSocket: net.Socket,
+    routes: DomainRoute[],
+    signal: AbortSignal,
+  ): Promise<{ targetHost: string; targetPort: number; buffered: Buffer[] }> {
+    const defaultHost = this.config.targetHost;
+    const defaultPort = this.config.targetPort;
+
+    return new Promise((resolve) => {
+      const chunks: Buffer[] = [];
+      let totalBytes = 0;
+      let resolved = false;
+      const MAX_BUFFER = 16384;
+      const TIMEOUT_MS = 5000;
+
+      const finish = (hostname: string | null) => {
+        if (resolved) return;
+        resolved = true;
+        clearTimeout(timer);
+        clientSocket.removeListener("data", onData);
+
+        const matched = hostname ? matchDomain(hostname, routes) : null;
+
+        this.log.info("proxy.domain.resolved", {
+          hostname: hostname ?? "<unknown>",
+          matched: matched?.domain ?? "default",
+          targetHost: matched?.targetHost ?? defaultHost,
+          targetPort: matched?.targetPort ?? defaultPort,
+        });
+
+        resolve({
+          targetHost: matched?.targetHost ?? defaultHost,
+          targetPort: matched?.targetPort ?? defaultPort,
+          buffered: chunks,
+        });
+      };
+
+      const timer = setTimeout(() => finish(null), TIMEOUT_MS);
+
+      const onData = (chunk: Buffer) => {
+        chunks.push(Buffer.from(chunk));
+        totalBytes += chunk.length;
+
+        const combined = Buffer.concat(chunks);
+
+        if (combined[0] === 0x16) {
+          // TLS ClientHello — extract SNI
+          const hostname = extractSniHostname(combined);
+          if (hostname !== null) {
+            finish(hostname);
+            return;
+          }
+          // Need more data — continue buffering
+        } else {
+          // Assume HTTP — extract Host header
+          const hostname = extractHttpHost(combined);
+          if (hostname !== null) {
+            finish(hostname);
+            return;
+          }
+        }
+
+        if (totalBytes >= MAX_BUFFER) {
+          finish(null);
+        }
+      };
+
+      clientSocket.on("data", onData);
+
+      signal.addEventListener("abort", () => {
+        if (!resolved) {
+          resolved = true;
+          clearTimeout(timer);
+          clientSocket.removeListener("data", onData);
+          resolve({
+            targetHost: defaultHost,
+            targetPort: defaultPort,
+            buffered: chunks,
+          });
+        }
+      }, { once: true });
+    });
   }
 
   private async waitForUpstream(

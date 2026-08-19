@@ -21,23 +21,29 @@
   },
   {
     "id": "svc_1775277966137_os66n4",
-    "name": "Dokploy-trafik",
+    "name": "HTTP-Router",
     "protocol": "tcp",
     "listenHost": "0.0.0.0",
     "listenPort": 80,
     "targetHost": "localhost",
     "targetPort": 80,
-    "enabled": true
+    "enabled": true,
+    "domainRoutes": [
+      { "domain": "ag-dp.b0t8.com", "targetHost": "192.168.88.16", "targetPort": 80 }
+    ]
   },
   {
     "id": "svc_1775279235967_4yeb76",
-    "name": "Dokploy-traefik2",
+    "name": "HTTPS-Router",
     "protocol": "tcp",
     "listenHost": "0.0.0.0",
     "listenPort": 443,
     "targetHost": "localhost",
     "targetPort": 443,
-    "enabled": true
+    "enabled": true,
+    "domainRoutes": [
+      { "domain": "ag-dp.b0t8.com", "targetHost": "192.168.88.16", "targetPort": 443 }
+    ]
   },
   {
     "id": "svc_1775564313376_zzq9gs",
