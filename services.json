@@ -29,7 +29,21 @@
     "targetPort": 80,
     "enabled": true,
     "domainRoutes": [
-      { "domain": "ag-dp.b0t8.com", "targetHost": "192.168.88.16", "targetPort": 80 }
+      {
+        "domain": "ag-dp.b0t8.com",
+        "targetHost": "192.168.88.16",
+        "targetPort": 80
+      },
+      {
+        "domain": "ag-arcane.b0t8.com",
+        "targetHost": "192.168.88.16",
+        "targetPort": 80
+      },
+      {
+        "domain": "sitemapradar.botpresso.com",
+        "targetHost": "192.168.88.5",
+        "targetPort": 80
+      }
     ]
   },
   {
@@ -42,7 +56,21 @@
     "targetPort": 443,
     "enabled": true,
     "domainRoutes": [
-      { "domain": "ag-dp.b0t8.com", "targetHost": "192.168.88.16", "targetPort": 443 }
+      {
+        "domain": "ag-dp.b0t8.com",
+        "targetHost": "192.168.88.16",
+        "targetPort": 443
+      },
+      {
+        "domain": "ag-arcane.b0t8.com",
+        "targetHost": "192.168.88.16",
+        "targetPort": 443
+      },
+      {
+        "domain": "sitemapradar.botpresso.com",
+        "targetHost": "192.168.88.5",
+        "targetPort": 443
+      }
     ]
   },
   {
